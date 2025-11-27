@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TikTok Mastery - Interactive Phone</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #000;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+    }
+
+    /* Phone + Frame */
+    .phone {
+      position: relative;
+      width: 380px;
+      height: 820px;
+    }
+    .frame {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .screen {
+      position: absolute;
+      top: 4.2%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 88.5%;
+      height: 91.6%;
+      background: #000;
+      border-radius: 45px;
+      overflow: hidden;
+    }
+
+    /* TikTok Feed */
+    .feed {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .slide {
+      min-height: 100%;
+      background: #000;
+      color: white;
+      position: relative;
+      padding: 20px 15px 80px;
+    }
+    .header {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      padding: 12px 0;
+    }
+    .video-area {
+      flex: 1;
+      background: #111;
+      border-radius: 12px;
+      margin: 10px 0;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 80px;
+      color: rgba(255,255,255,0.3);
+    }
+    .caption {
+      font-size: 18px;
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+    .caption strong { font-size: 26px; display: block; margin-bottom: 8px; }
+
+    /* Right-side action buttons */
+    .actions {
+      position: absolute;
+      right: 12px;
+      bottom: 90px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      z-index: 10;
+    }
+    .btn {
+      background: rgba(255,255,255,0.15);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn:hover { transform: scale(1.15); }
+    .btn.liked { color: #ff0050; animation: heartPop 0.6s; }
+    .btn-num {
+      font-size: 13px;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    @keyframes heartPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone">
+  <!-- Beautiful iPhone 16 Pro frame (works forever) -->
+  <img class="frame" src="https://raw.githubusercontent.com/eludadev/phone-frame/master/iphone16pro-black.png" alt="iPhone">
+
+  <div class="screen">
+    <div class="feed" id="feed">
+      
+      <!-- Slide 1 - HOOK -->
+      <div class="slide">
+        <div class="header">For You</div>
+        <div class="video-area" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+        <div class="caption">
+          <strong>Hook</strong>
+          A strong hook grabs attention in the first 3–5 seconds.
+        </div>
+        <div class="actions">
+          <div class="btn" onclick="like(this)">♥<div class="btn-num">24.8K</div></div>
+          <div class="btn">💬<div class="btn-num">1.3K</div></div>
+          <div class="btn">↗️<div class="btn-num">892</div></div>
+        </div>
+      </div>
+
+      <!-- Slide 2 - VISUALS -->
+      <div class="slide">
+        <div class="header">For You</div>
+        <div class="video-area" style="background: linear-gradient(135deg, #f093fb, #f5576c);"></div>
+        <div class="caption">
+          <strong>Visuals</strong>
+          Use clean, bold visuals to keep learners engaged.
+        </div>
+        <div class="actions">
+          <div class="btn" onclick="like(this)">♥<div class="btn-num">31.2K</div></div>
+          <div class="btn">💬<div class="btn-num">2.1K</div></div>
+          <div class="btn">↗️<div class="btn-num">1.4K</div></div>
+        </div>
+      </div>
+
+      <!-- Slide 3 - AUDIO -->
+      <div class="slide">
+        <div class="header">For You</div>
+        <div class="video-area" style="background: linear-gradient(135deg, #4facfe, #00f2fe);"></div>
+        <div class="caption">
+          <strong>Audio</strong>
+          Clear, crisp audio keeps watchers from scrolling away.
+        </div>
+        <div class="actions">
+          <div class="btn" onclick="like(this)">♥<div class="btn-num">19.7K</div></div>
+          <div class="btn">💬<div class="btn-num">987</div></div>
+          <div class="btn">↗️<div class="btn-num">556</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const feed = document.getElementById('feed');
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+
+  function goTo(n) {
+    current = Math.max(0, Math.min(n, slides.length - 1));
+    feed.style.transform = `translateY(-${current * 100}%)`;
+  }
+
+  // Touch swipe (mobile)
+  let startY = 0;
+  feed.addEventListener('touchstart', e => startY = e.touches[0].clientY);
+  feed.addEventListener('touchend', e => {
+    const endY = e.changedTouches[0].clientY;
+    const diff = startY - endY;
+    if (Math.abs(diff) > 70) {
+      diff > 0 ? goTo(current + 1) : goTo(current - 1);
+    }
+  });
+
+  // Mouse wheel / arrow keys (desktop)
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowUp') goTo(current - 1);
+  });
+
+  // Like button
+  function like(btn) {
+    if (btn.classList.contains('liked')) return;
+    btn.classList.add('liked');
+    const num = btn.querySelector('.btn-num');
+    let val = parseFloat(num.textContent.replace('K','')) + 0.1;
+    num.textContent = val.toFixed(1) + 'K';
+  }
+
+  // Make feed tall enough
+  feed.style.height = slides.length * 100 + '%';
+</script>
+
+</body>
+</html>
